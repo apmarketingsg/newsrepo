@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global News Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: #f7f4ef;
+  color: #1a1714;
+  min-height: 100vh;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  background: #1a1714;
+  color: #f7f4ef;
+  padding: 0 48px;
+  border-bottom: 3px solid #c8a84b;
+}
+.masthead-rule-top {
+  border-top: 1px solid #3a3530;
+  padding-top: 28px;
+}
+.masthead-date {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #7a7060;
+  margin-bottom: 16px;
+}
+.masthead-title {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 7vw, 88px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
+  color: #f7f4ef;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #3a3530;
+}
+.masthead-title span { color: #c8a84b; }
+.masthead-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 24px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #7a7060;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.masthead-sub-center {
+  display: flex; align-items: center; gap: 8px;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #5dba7a;
+  animation: blink 2s ease infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+/* ── QUERY SECTION ── */
+.query-section {
+  background: #fff;
+  border-bottom: 1px solid #e2ddd6;
+  padding: 36px 48px;
+}
+.query-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #9a9080;
+  margin-bottom: 20px;
+}
+.query-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 2.6vw, 28px);
+  font-style: italic;
+  color: #4a4540;
+  line-height: 1.5;
+}
+.q-text { font-style: italic; }
+
+/* ── DROPDOWNS ── */
+.dd-wrap { position: relative; display: inline-block; }
+
+.dd-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Playfair Display', serif;
+  font-size: inherit;
+  font-style: italic;
+  font-weight: 700;
+  color: #1a1714;
+  background: #f7f4ef;
+  border: none;
+  border-bottom: 2.5px solid #1a1714;
+  padding: 2px 26px 2px 6px;
+  cursor: pointer;
+  position: relative;
+  transition: color .2s, border-color .2s, background .2s;
+  white-space: nowrap;
+  max-width: 420px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dd-trigger::after {
+  content: '▾';
+  position: absolute; right: 6px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px; font-style: normal;
+  color: inherit;
+}
+.dd-trigger:hover, .dd-trigger.open {
+  color: #c8a84b; border-color: #c8a84b; background: #fffdf5;
+}
+
+/* industry trigger - different colour */
+.dd-trigger.ind-style {
+  color: #7a3b1e; border-color: #7a3b1e;
+}
+.dd-trigger.ind-style:hover { color: #c8a84b; border-color: #c8a84b; }
+
+.dd-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #d8d2c8;
+  min-width: 260px;
+  max-height: 340px;
+  overflow-y: auto;
+  z-index: 800;
+  box-shadow: 0 8px 32px rgba(0,0,0,.14);
+}
+.dd-panel.open { display: block; animation: panelIn .15s ease; }
+@keyframes panelIn { from{opacity:0;transform:translateY(-6px);} to{opacity:1;transform:translateY(0);} }
+
+.dd-search {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #e8e2d8;
+  padding: 11px 14px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13px;
+  background: #faf8f4;
+  outline: none;
+  color: #1a1714;
+}
+.dd-search::placeholder { color: #bbb; }
+
+.dd-list { }
+.dd-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13px;
+  color: #4a4540;
+  border-bottom: 1px solid #f0ece4;
+  transition: background .1s;
+  user-select: none;
+}
+.dd-opt:hover { background: #faf8f4; }
+.dd-opt.sel { color: #1a1714; font-weight: 600; }
+.dd-flag { font-size: 16px; flex-shrink: 0; }
+.dd-check {
+  width: 15px; height: 15px; border: 1.5px solid #ccc;
+  border-radius: 2px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: transparent;
+  transition: background .1s, border-color .1s;
+}
+.dd-opt.sel .dd-check { background: #1a1714; border-color: #1a1714; color: #fff; }
+
+/* single-select opts */
+.dd-opt.single.sel { background: #1a1714; color: #f7f4ef; }
+.dd-opt.single.sel .dd-check { background: #c8a84b; border-color: #c8a84b; }
+.dd-opt.single:hover { background: #f0ece4; }
+.dd-opt.single.sel:hover { background: #2a2520; }
+
+.dd-panel::-webkit-scrollbar { width: 4px; }
+.dd-panel::-webkit-scrollbar-thumb { background: #d0c8b8; }
+
+/* ── ACTIONS ── */
+.actions {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 28px; flex-wrap: wrap;
+}
+.btn-primary {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  background: #1a1714; color: #f7f4ef;
+  border: none; padding: 13px 32px;
+  cursor: pointer; transition: background .2s, transform .1s;
+}
+.btn-primary:hover { background: #2e2a24; transform: translateY(-1px); }
+.btn-primary:active { transform: none; }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  background: transparent; color: #9a9080;
+  border: 1px solid #d0c8b8; padding: 13px 24px;
+  cursor: pointer; transition: color .2s, border-color .2s;
+}
+.btn-secondary:hover { color: #1a1714; border-color: #1a1714; }
+.btn-secondary:disabled { opacity: .3; cursor: not-allowed; }
+
+.status-txt {
+  font-size: 12px; letter-spacing: 1px;
+  color: #9a9080; font-style: italic;
+}
+
+/* ── PROGRESS ── */
+.progress {
+  height: 3px; background: #e8e2d8;
+  display: none; overflow: hidden;
+}
+.progress.on { display: block; }
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c8a84b, #1a1714, #c8a84b);
+  background-size: 200%;
+  animation: scan 1.6s linear infinite;
+}
+@keyframes scan { 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
+
+/* ── RESULTS ── */
+.results { max-width: 1280px; margin: 0 auto; padding: 40px 48px 80px; }
+
+/* Country container */
+.country-block {
+  margin-bottom: 60px;
+  animation: rise .45s ease both;
+}
+@keyframes rise { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+
+.country-head {
+  display: flex; align-items: center; gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #1a1714;
+  margin-bottom: 22px;
+}
+.country-flag { font-size: 30px; line-height: 1; }
+.country-name-block {}
+.country-eyebrow {
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: #9a9080;
+  margin-bottom: 2px;
+}
+.country-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; color: #1a1714;
+}
+.country-count {
+  margin-left: auto;
+  font-size: 11px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #9a9080;
+}
+
+/* Cards grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* Card */
+.card {
+  background: #fff;
+  border: 1px solid #e2ddd6;
+  display: flex; flex-direction: column;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+  overflow: hidden;
+}
+.card:hover {
+  border-color: #c0b8aa;
+  box-shadow: 0 6px 28px rgba(0,0,0,.1);
+  transform: translateY(-3px);
+}
+
+/* Card image */
+.card-img-box {
+  width: 100%; height: 175px;
+  overflow: hidden; background: #f0ece4; flex-shrink: 0;
+  position: relative;
+}
+.card-img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .4s ease;
+}
+.card:hover .card-img { transform: scale(1.04); }
+.card-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; background: #ede8e0; color: #c8c0b0;
+}
+.match-tag {
+  position: absolute; top: 10px; right: 10px;
+  background: #5dba7a; color: #fff;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 3px 9px;
+}
+
+/* Card body */
+.card-body {
+  padding: 16px 18px 18px;
+  display: flex; flex-direction: column; gap: 14px; flex: 1;
+}
+.card-headline {
+  font-family: 'Source Serif 4', serif;
+  font-size: 14.5px; line-height: 1.55; color: #1a1714; flex: 1;
+}
+.card-headline a { color: inherit; text-decoration: none; }
+.card-headline a:hover { color: #7a3b1e; }
+
+.card-foot {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.card-time {
+  font-size: 11px; letter-spacing: 1px;
+  text-transform: uppercase; color: #b0a898;
+}
+.card-badges {
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+.badge {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 3px 9px; white-space: nowrap;
+  border: 1px solid;
+}
+.badge-source  { border-color: #c8c0b0; color: #7a7060; background: #faf8f4; }
+.badge-section { border-color: #c8a84b; color: #7a5a10; background: #fffcf0; }
+
+/* Empty */
+.empty { text-align: center; padding: 80px 20px; color: #9a9080; }
+.empty-icon { font-size: 48px; margin-bottom: 18px; }
+.empty h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px; color: #4a4540; }
+.empty p { font-size: 14px; line-height: 1.7; max-width: 440px; margin: 0 auto; }
+
+/* Overlay to close dropdowns */
+#overlay { display:none; position:fixed; inset:0; z-index:700; }
+#overlay.on { display:block; }
+
+/* Divider */
+.divider { height: 1px; background: #e2ddd6; margin: 0 48px; }
+
+@media (max-width: 680px) {
+  .masthead, .query-section, .results, .divider { padding-left: 20px; padding-right: 20px; }
+  .masthead { padding: 0 20px; }
+  .query-line { font-size: 17px; }
+}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-rule-top">
+    <p class="masthead-date" id="headDate"></p>
+    <h1 class="masthead-title">Global<span>.</span>News<span>.</span>Desk</h1>
+    <div class="masthead-sub">
+      <span>38 Verified Feeds</span>
+      <span class="masthead-sub-center"><span class="live-dot"></span> Live · Last 24 Hours</span>
+      <span>18 Countries</span>
+    </div>
+  </div>
+</header>
+
+<!-- QUERY -->
+<section class="query-section">
+  <p class="query-label">Build your feed</p>
+  <div class="query-line">
+
+    <span class="q-text">I want news from</span>
+
+    <!-- Country multi-select -->
+    <div class="dd-wrap" id="cWrap">
+      <button class="dd-trigger" id="cTrigger">choose countries…</button>
+      <div class="dd-panel" id="cPanel">
+        <input class="dd-search" id="cSearch" placeholder="Search countries…" autocomplete="off">
+        <div class="dd-list" id="cList"></div>
+      </div>
+    </div>
+
+    <span class="q-text">.</span>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" id="goBtn">Generate Feed</button>
+    <button class="btn-secondary" id="refBtn" disabled>↻ Refresh</button>
+    <span class="status-txt" id="statusTxt"></span>
+  </div>
+</section>
+
+<div class="progress" id="prog"><div class="progress-fill"></div></div>
+<div class="divider"></div>
+
+<!-- RESULTS -->
+<div class="results" id="results"></div>
+
+<div id="overlay"></div>
+
+<script>
+// ═══════════════════════════════
+// DATA — verified active feeds
+// ═══════════════════════════════
+const COUNTRIES = [
+  { code:"US", name:"United States", flag:"🇺🇸", feeds:[
+    { section:"World",      source:"VOA",  url:"https://feeds.voanews.com/voaworld/rss" },
+    { section:"World",      source:"NPR",  url:"https://feeds.npr.org/1004/rss.xml" },
+    { section:"Business",   source:"NPR",  url:"https://feeds.npr.org/1006/rss.xml" },
+    { section:"Science",    source:"NPR",  url:"https://feeds.npr.org/1007/rss.xml" },
+    { section:"Health",     source:"NPR",  url:"https://feeds.npr.org/1128/rss.xml" },
+    { section:"Politics",   source:"NPR",  url:"https://feeds.npr.org/1014/rss.xml" },
+    { section:"Technology", source:"NPR",  url:"https://feeds.npr.org/1019/rss.xml" },
+    { section:"Culture",    source:"NPR",  url:"https://feeds.npr.org/1008/rss.xml" },
+  ]},
+  { code:"CA", name:"Canada", flag:"🇨🇦", feeds:[
+    { section:"World",    source:"CBC", url:"https://www.cbc.ca/cmlink/rss-world" },
+    { section:"Business", source:"CBC", url:"https://www.cbc.ca/cmlink/rss-business" },
+    { section:"Health",   source:"CBC", url:"https://www.cbc.ca/cmlink/rss-health" },
+    { section:"Politics", source:"CBC", url:"https://www.cbc.ca/cmlink/rss-politics" },
+    { section:"Sports",   source:"CBC", url:"https://www.cbc.ca/cmlink/rss-sports" },
+  ]},
+  { code:"BR", name:"Brazil", flag:"🇧🇷", feeds:[
+    { section:"World",    source:"Agência Brasil", url:"https://agenciabrasil.ebc.com.br/en/rss/ultimasnoticias" },
+    { section:"Business", source:"Agência Brasil", url:"https://agenciabrasil.ebc.com.br/en/rss/economia" },
+    { section:"Politics", source:"Agência Brasil", url:"https://agenciabrasil.ebc.com.br/en/rss/politica" },
+  ]},
+  { code:"GB", name:"United Kingdom", flag:"🇬🇧", feeds:[
+    { section:"World",      source:"BBC", url:"https://feeds.bbci.co.uk/news/world/rss.xml" },
+    { section:"Politics",   source:"BBC", url:"https://feeds.bbci.co.uk/news/politics/rss.xml" },
+    { section:"Business",   source:"BBC", url:"https://feeds.bbci.co.uk/news/business/rss.xml" },
+    { section:"Technology", source:"BBC", url:"https://feeds.bbci.co.uk/news/technology/rss.xml" },
+    { section:"Science",    source:"BBC", url:"https://feeds.bbci.co.uk/news/science_and_environment/rss.xml" },
+    { section:"Health",     source:"BBC", url:"https://feeds.bbci.co.uk/news/health/rss.xml" },
+    { section:"Culture",    source:"BBC", url:"https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml" },
+    { section:"Sports",     source:"BBC", url:"https://feeds.bbci.co.uk/sport/rss.xml" },
+  ]},
+  { code:"DE", name:"Germany", flag:"🇩🇪", feeds:[
+    { section:"World",    source:"DW", url:"https://rss.dw.com/rdf/rss-en-world" },
+    { section:"Business", source:"DW", url:"https://rss.dw.com/rdf/rss-en-business" },
+    { section:"Science",  source:"DW", url:"https://rss.dw.com/rdf/rss-en-science" },
+    { section:"Sports",   source:"DW", url:"https://rss.dw.com/rdf/rss-en-sport" },
+    { section:"Culture",  source:"DW", url:"https://rss.dw.com/rdf/rss-en-culture" },
+  ]},
+  { code:"FR", name:"France", flag:"🇫🇷", feeds:[
+    { section:"World",    source:"France 24", url:"https://www.france24.com/en/rss" },
+    { section:"Business", source:"France 24", url:"https://www.france24.com/en/economy/rss" },
+    { section:"Sports",   source:"France 24", url:"https://www.france24.com/en/sports/rss" },
+    { section:"Culture",  source:"France 24", url:"https://www.france24.com/en/culture/rss" },
+  ]},
+  { code:"RU", name:"Russia", flag:"🇷🇺", feeds:[
+    { section:"World",    source:"TASS", url:"https://tass.com/rss/v2.xml" },
+    { section:"Business", source:"TASS", url:"https://tass.com/rss/v2.xml" },
+  ]},
+  { code:"NL", name:"Netherlands", flag:"🇳🇱", feeds:[
+    { section:"World",    source:"NOS", url:"https://feeds.nos.nl/nosnieuwsalgemeen" },
+    { section:"Business", source:"NOS", url:"https://feeds.nos.nl/nosnieuwseconomie" },
+    { section:"Sports",   source:"NOS", url:"https://feeds.nos.nl/nosnieuwssport" },
+    { section:"Politics", source:"NOS", url:"https://feeds.nos.nl/nosnieuwspolitiek" },
+  ]},
+  { code:"PL", name:"Poland", flag:"🇵🇱", feeds:[
+    { section:"World", source:"PAP", url:"https://www.pap.pl/en/rss.xml" },
+  ]},
+  { code:"SE", name:"Sweden", flag:"🇸🇪", feeds:[
+    { section:"World", source:"Sveriges Radio", url:"https://sverigesradio.se/rss/3751" },
+  ]},
+  { code:"NO", name:"Norway", flag:"🇳🇴", feeds:[
+    { section:"World",    source:"NRK", url:"https://www.nrk.no/toppsaker.rss" },
+    { section:"Business", source:"NRK", url:"https://www.nrk.no/nyheter/okonomi/rss.xml" },
+    { section:"Culture",  source:"NRK", url:"https://www.nrk.no/kultur/rss.xml" },
+    { section:"Sports",   source:"NRK", url:"https://www.nrk.no/sport/rss.xml" },
+    { section:"Politics", source:"NRK", url:"https://www.nrk.no/nyheter/innenriks/rss.xml" },
+  ]},
+  { code:"CN", name:"China", flag:"🇨🇳", feeds:[
+    { section:"World",    source:"Global Times", url:"https://www.globaltimes.cn/rss/outbrain.xml" },
+    { section:"World",    source:"ECNS",         url:"https://www.ecns.cn/rss/rss.xml" },
+    { section:"Business", source:"ECNS",         url:"https://www.ecns.cn/rss/rss.xml" },
+  ]},
+  { code:"JP", name:"Japan", flag:"🇯🇵", feeds:[
+    { section:"World",    source:"NHK World", url:"https://www3.nhk.or.jp/rss/news/cat0.xml" },
+    { section:"Business", source:"NHK World", url:"https://www3.nhk.or.jp/rss/news/cat5.xml" },
+    { section:"Science",  source:"NHK World", url:"https://www3.nhk.or.jp/rss/news/cat7.xml" },
+    { section:"Sports",   source:"NHK World", url:"https://www3.nhk.or.jp/rss/news/cat6.xml" },
+    { section:"Culture",  source:"NHK World", url:"https://www3.nhk.or.jp/rss/news/cat2.xml" },
+  ]},
+  { code:"KR", name:"South Korea", flag:"🇰🇷", feeds:[
+    { section:"World",    source:"KBS World", url:"https://world.kbs.co.kr/rss/rss_news.htm" },
+    { section:"Business", source:"KBS World", url:"https://world.kbs.co.kr/rss/rss_news.htm" },
+    { section:"Culture",  source:"KBS World", url:"https://world.kbs.co.kr/rss/rss_news.htm" },
+  ]},
+  { code:"AU", name:"Australia", flag:"🇦🇺", feeds:[
+    { section:"World",    source:"ABC Australia", url:"https://www.abc.net.au/news/feed/51120/rss.xml" },
+    { section:"Business", source:"ABC Australia", url:"https://www.abc.net.au/news/feed/54918/rss.xml" },
+    { section:"Science",  source:"ABC Australia", url:"https://www.abc.net.au/news/feed/52278/rss.xml" },
+    { section:"Health",   source:"ABC Australia", url:"https://www.abc.net.au/news/feed/54370/rss.xml" },
+    { section:"Sports",   source:"ABC Australia", url:"https://www.abc.net.au/news/feed/40684/rss.xml" },
+    { section:"Politics", source:"ABC Australia", url:"https://www.abc.net.au/news/feed/2942460/rss.xml" },
+  ]},
+  { code:"ID", name:"Indonesia", flag:"🇮🇩", feeds:[
+    { section:"World",    source:"Antara", url:"https://en.antaranews.com/rss/news.xml" },
+    { section:"Business", source:"Antara", url:"https://en.antaranews.com/rss/business.xml" },
+    { section:"Science",  source:"Antara", url:"https://en.antaranews.com/rss/science.xml" },
+    { section:"Sports",   source:"Antara", url:"https://en.antaranews.com/rss/sports.xml" },
+  ]},
+  { code:"TW", name:"Taiwan", flag:"🇹🇼", feeds:[
+    { section:"World",    source:"Focus Taiwan", url:"https://focustaiwan.tw/rss" },
+    { section:"Business", source:"Focus Taiwan", url:"https://focustaiwan.tw/rss/business" },
+    { section:"Politics", source:"Focus Taiwan", url:"https://focustaiwan.tw/rss/politics" },
+  ]},
+  { code:"SG", name:"Singapore", flag:"🇸🇬", feeds:[
+    { section:"Singapore",source:"CNA", url:"https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=10416" },
+    { section:"World",    source:"CNA", url:"https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6511" },
+    { section:"Business", source:"CNA", url:"https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6936" },
+  ]},
+];
+
+// ═══════════════════════════════
+// DATE
+// ═══════════════════════════════
+document.getElementById("headDate").textContent = new Date().toLocaleDateString("en-GB", {
+  weekday:"long", year:"numeric", month:"long", day:"numeric"
+});
+
+// ═══════════════════════════════
+// DROPDOWN MACHINERY
+// ═══════════════════════════════
+const overlay = document.getElementById("overlay");
+let selectedCountries = new Set();
+
+function closeAllPanels() {
+  document.querySelectorAll(".dd-panel.open").forEach(p => p.classList.remove("open"));
+  document.querySelectorAll(".dd-trigger.open").forEach(t => t.classList.remove("open"));
+  overlay.classList.remove("on");
+}
+overlay.addEventListener("click", closeAllPanels);
+
+function togglePanel(triggerId, panelId) {
+  const t = document.getElementById(triggerId);
+  const p = document.getElementById(panelId);
+  const wasOpen = p.classList.contains("open");
+  closeAllPanels();
+  if (!wasOpen) {
+    p.classList.add("open");
+    t.classList.add("open");
+    overlay.classList.add("on");
+    p.querySelector(".dd-search")?.focus();
+  }
+}
+
+function updateTriggerLabel(triggerId, sel, placeholder) {
+  const t = document.getElementById(triggerId);
+  if (sel.size === 0)        t.textContent = placeholder;
+  else if (sel.size === 1)   t.textContent = [...sel][0];
+  else                       t.textContent = `${sel.size} selected`;
+}
+
+// Multi-select builder
+function buildMulti(triggerId, panelId, searchId, listId, items, getFlagFn, placeholder, selSet, onChange) {
+  document.getElementById(triggerId).addEventListener("click", () => togglePanel(triggerId, panelId));
+
+  function render(filter = "") {
+    const list = document.getElementById(listId);
+    list.innerHTML = "";
+    items.forEach(item => {
+      const label = typeof item === "string" ? item : item.name;
+      const flag  = getFlagFn ? getFlagFn(item) : "";
+      if (filter && !label.toLowerCase().includes(filter.toLowerCase())) return;
+      const div = document.createElement("div");
+      div.className = "dd-opt" + (selSet.has(label) ? " sel" : "");
+      div.innerHTML = `<span class="dd-check">${selSet.has(label) ? "✓" : ""}</span>${flag ? `<span class="dd-flag">${flag}</span>` : ""}<span>${label}</span>`;
+      div.addEventListener("click", e => {
+        e.stopPropagation();
+        if (selSet.has(label)) selSet.delete(label); else selSet.add(label);
+        updateTriggerLabel(triggerId, selSet, placeholder);
+        onChange();
+        render(document.getElementById(searchId).value);
+      });
+      list.appendChild(div);
+    });
+  }
+
+  document.getElementById(searchId).addEventListener("input", e => render(e.target.value));
+  render();
+}
+
+// Single-select builder
+function buildSingle(triggerId, panelId, searchId, listId, items, emojiMap, onChange) {
+  document.getElementById(triggerId).addEventListener("click", () => togglePanel(triggerId, panelId));
+
+  function render(filter = "") {
+    const list = document.getElementById(listId);
+    list.innerHTML = "";
+    items.forEach(label => {
+      if (filter && !label.toLowerCase().includes(filter.toLowerCase())) return;
+      const div = document.createElement("div");
+      div.className = "dd-opt single" + (label === selectedIndustry ? " sel" : "");
+      const em = emojiMap[label] || "";
+      div.innerHTML = `<span class="dd-check">${label === selectedIndustry ? "✓" : ""}</span><span>${em ? em + " " : ""}${label}</span>`;
+      div.addEventListener("click", e => {
+        e.stopPropagation();
+        selectedIndustry = label;
+        document.getElementById(triggerId).textContent = label;
+        closeAllPanels();
+        onChange();
+        render();
+      });
+      list.appendChild(div);
+    });
+  }
+
+  document.getElementById(searchId).addEventListener("input", e => render(e.target.value));
+  render();
+}
+
+buildMulti("cTrigger","cPanel","cSearch","cList", COUNTRIES, c => c.flag, "choose countries…", selectedCountries, () => {});
+
+// ═══════════════════════════════
+// RSS FETCH
+// ═══════════════════════════════
+// Multiple CORS proxies — tried in order until one succeeds
+const PROXIES = [
+  {
+    build: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    extract: async r => { const j = await r.json(); return j.contents || ""; }
+  },
+  {
+    build: url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+    extract: async r => r.text()
+  },
+  {
+    build: url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+    extract: async r => r.text()
+  },
+];
+
+function parseItems(xmlText) {
+  const xml = new DOMParser().parseFromString(xmlText, "text/xml");
+  // Bail if parse error
+  if (xml.querySelector("parsererror")) return null;
+  const items = [...xml.querySelectorAll("item, entry")];
+  if (!items.length) return null;
+  return items.map(el => {
+    const txt = t => el.querySelector(t)?.textContent?.trim() || "";
+    let img = null;
+    const enc = el.querySelector("enclosure");
+    if (enc?.getAttribute("type")?.startsWith("image")) img = enc.getAttribute("url");
+    if (!img) img = el.getElementsByTagNameNS("http://search.yahoo.com/mrss/","content")[0]?.getAttribute("url") || null;
+    if (!img) img = el.getElementsByTagNameNS("http://search.yahoo.com/mrss/","thumbnail")[0]?.getAttribute("url") || null;
+    // Some feeds put image in description as <img src>
+    if (!img) {
+      const desc = txt("description") || txt("content");
+      const m = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (m) img = m[1];
+    }
+    const raw = txt("pubDate") || txt("dc:date") || txt("updated") || txt("published");
+    const date = raw ? new Date(raw) : new Date();
+    const link = txt("link") || el.querySelector("link")?.getAttribute("href") || "#";
+    return { title: txt("title"), link, date, image: img };
+  }).filter(i => i.title && !isNaN(i.date) && Date.now() - i.date.getTime() < 86400000);
+}
+
+async function fetchFeed(url) {
+  for (const proxy of PROXIES) {
+    try {
+      const r = await fetch(proxy.build(url), { signal: AbortSignal.timeout(10000) });
+      if (!r.ok) continue;
+      const text = await proxy.extract(r);
+      if (!text || text.length < 50) continue;
+      const items = parseItems(text);
+      if (items !== null) return items; // success — even empty array is valid
+    } catch { /* try next proxy */ }
+  }
+  return [];
+}
+
+function relTime(d) {
+  const m = Math.round((Date.now() - d) / 60000);
+  if (m < 1) return "Just now";
+  if (m < 60) return `${m}m ago`;
+  const h = Math.round(m / 60);
+  return h < 24 ? `${h}h ago` : new Date(d).toLocaleDateString();
+}
+
+// ═══════════════════════════════
+// RENDER
+// ═══════════════════════════════
+function cardHTML(art) {
+  return `
+<article class="card">
+  <div class="card-img-box">
+    ${art.image
+      ? `<img class="card-img" src="${art.image}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : ""}
+    <div class="card-placeholder" style="${art.image ? "display:none" : ""}">📰</div>
+  </div>
+  <div class="card-body">
+    <p class="card-headline"><a href="${art.link}" target="_blank" rel="noopener">${art.title}</a></p>
+    <div class="card-foot">
+      <span class="card-time">${relTime(art.date)}</span>
+      <div class="card-badges">
+        <span class="badge badge-source">${art.source}</span>
+        <span class="badge badge-section">${art.section}</span>
+      </div>
+    </div>
+  </div>
+</article>`;
+}
+
+function blockHTML(country, articles, delay) {
+  const total = articles.length;
+  return `
+<div class="country-block" style="animation-delay:${delay}ms">
+  <div class="country-head">
+    <span class="country-flag">${country.flag}</span>
+    <div class="country-name-block">
+      <div class="country-eyebrow">News from</div>
+      <div class="country-name">${country.name}</div>
+    </div>
+    <span class="country-count">${total} article${total!==1?"s":""}</span>
+  </div>
+  <div class="cards-grid">${articles.map(a => cardHTML(a)).join("")}</div>
+</div>`;
+}
+
+// ═══════════════════════════════
+// GENERATE
+// ═══════════════════════════════
+async function generate() {
+  if (!selectedCountries.size) { alert("Please select at least one country."); return; }
+
+  const goBtn   = document.getElementById("goBtn");
+  const refBtn  = document.getElementById("refBtn");
+  const prog    = document.getElementById("prog");
+  const status  = document.getElementById("statusTxt");
+  const results = document.getElementById("results");
+
+  goBtn.disabled = refBtn.disabled = true;
+  prog.classList.add("on");
+  results.innerHTML = "";
+
+  const selCountries = COUNTRIES.filter(c => selectedCountries.has(c.name));
+
+  // Build fetch tasks — ALL feeds for each selected country, deduped by URL+section
+  const tasks = [];
+  selCountries.forEach(country => {
+    const seen = new Set();
+    country.feeds.forEach(f => {
+      const key = f.url + "|" + f.section;
+      if (seen.has(key)) return;
+      seen.add(key);
+      tasks.push({ country, section: f.section, source: f.source, url: f.url });
+    });
+  });
+
+  status.textContent = `Fetching ${tasks.length} feed${tasks.length !== 1 ? "s" : ""}…`;
+
+  // Fetch all in parallel, cache by URL to avoid duplicate HTTP requests
+  const urlCache = {};
+  let done = 0;
+  await Promise.all(tasks.map(async t => {
+    if (!urlCache[t.url]) urlCache[t.url] = fetchFeed(t.url);
+    t.items = await urlCache[t.url];
+    done++;
+    status.textContent = `Fetching feeds… ${done}/${tasks.length}`;
+  }));
+
+  // Group by country
+  const byCountry = {};
+  selCountries.forEach(c => { byCountry[c.code] = { country: c, articles: [] }; });
+
+  tasks.forEach(({ country, section, source, items }) => {
+    items.forEach(i => {
+      byCountry[country.code].articles.push({ ...i, section, source });
+    });
+  });
+
+  // Dedupe by title within each country, sort newest first
+  Object.values(byCountry).forEach(b => {
+    const seen = new Set();
+    b.articles = b.articles.filter(a => { if (seen.has(a.title)) return false; seen.add(a.title); return true; });
+    b.articles.sort((a, z) => z.date - a.date);
+  });
+
+  const totalArticles = Object.values(byCountry).reduce((s, b) => s + b.articles.length, 0);
+
+  prog.classList.remove("on");
+  goBtn.disabled = refBtn.disabled = false;
+
+  if (totalArticles === 0) {
+    results.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><h3>No articles in the last 24 hours</h3><p>No recent articles found for the selected countries. Some feeds may be temporarily unavailable — try refreshing or adjusting your selection.</p></div>`;
+    status.textContent = "No results found.";
+    return;
+  }
+
+  status.textContent = `${totalArticles} article${totalArticles !== 1 ? "s" : ""} · last 24 hrs`;
+
+  let html = ""; let delay = 0;
+  selCountries.forEach(c => {
+    const b = byCountry[c.code];
+    if (b.articles.length) { html += blockHTML(c, b.articles, delay); delay += 80; }
+  });
+  results.innerHTML = html;
+}
+
+document.getElementById("goBtn").addEventListener("click", generate);
+document.getElementById("refBtn").addEventListener("click", generate);
+</script>
+</body>
+</html>
